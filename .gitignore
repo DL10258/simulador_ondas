@@ -1,0 +1,14 @@
+# Entornos y caché
+venv/
+__pycache__/
+*.pyc
+
+# Archivos de salida del simulador
+output/
+*.dat
+*.csv
+
+# Archivos de SO e IDEs
+.vscode/
+.idea/
+__pycache__/

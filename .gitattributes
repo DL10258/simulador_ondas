@@ -1,0 +1,5 @@
+# Estandarizar todos los archivos de texto a LF internamente
+* text=auto eol=lf
+
+# Excepciones: Archivos que Windows necesita explícitamente con CRLF
+*.bat text eol=crlf

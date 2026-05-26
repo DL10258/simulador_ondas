@@ -12,3 +12,7 @@ def barrera(x,limite_izq,limite_der,V_0):
     V=np.zeros_like(x)
     V[(x>=limite_izq)&(x<=limite_der)]=V_0
     return V
+def pozo_finito(x,limite_izq,limite_der,V_0):
+    V=np.zeros_like(x)
+    V[(x>=limite_izq)&(x<=limite_der)]=-np.abs(V_0)
+    return V 

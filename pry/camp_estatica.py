@@ -10,7 +10,7 @@ sigma=5.0
 k0=2.0
 
 A = (1.0 / (np.pi * sigma**2))**0.25
-psi_0=A*np.exp(1j*k0*x)*np.exp(-(1/2*sigma**2)*(x-x0)**2)
+psi_0=A*np.exp(1j*k0*x)*np.exp(-(1/(2*sigma**2))*(x-x0)**2)
 
 prob_0=np.abs(psi_0)**2 
 

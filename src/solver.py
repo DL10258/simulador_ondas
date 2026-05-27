@@ -22,10 +22,11 @@ beta=1j*0.5*dt/hbar
 
 V=np.zeros(N)
 diag_principal=2*alpha+V
-diag_secundaria=-alpha
+diag_secundaria=-alpha*np.ones(N-1)
 
 H=diags([diag_secundaria,diag_principal,diag_secundaria],[-1,0,1],format='csc')
 I=diags([np.ones(N)],[0],format='csc')
+
 A=I+beta*H
 B=I-beta*H 
 

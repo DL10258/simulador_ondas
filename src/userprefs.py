@@ -30,7 +30,7 @@ class user_config:
     def datos_operador_temporal(self):
         return [int(self.params["N"]),self.params["grilla"],self.params["dt"]]
     def datos_potencial(self):
-        return [self.params["limite_izq"],self.params["limite_der"],self.params["V0"]]
+        return [self.params["limite_izq"],self.params["limite_der"],self.params["V0"],self.params["punto_potencial"]]
 class constantes_elegidas:
     def __init__(self):
         self.constantes={

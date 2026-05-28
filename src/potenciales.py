@@ -21,3 +21,14 @@ def pozo_finito(x,limite_izq,limite_der,V_0,**kwargs):
     V=np.zeros_like(x)
     V[(x>=limite_izq)&(x<=limite_der)]=-np.abs(V_0)
     return V 
+def pozo_triangular(x, limite_izq, limite_der, V_0, **kwargs):
+    V = np.zeros_like(x, dtype=np.float64)
+    xc = (limite_izq + limite_der) / 2      
+    a  = (limite_der - limite_izq) / 2      
+    mask = (x >= limite_izq) & (x <= limite_der)
+    V[mask] = -np.abs(V_0) * (1 - np.abs(x[mask] - xc) / a)
+    return V
+def oscilador_armonico(x, omega=1.0, **kwargs):
+    return 0.5 * omega**2 * x**2
+def doble_pozo(x, lam=0.1, a=3.0, epsilon=0.3, **kwargs):
+    return lam * (x**2 - a**2)**2 + epsilon * x 

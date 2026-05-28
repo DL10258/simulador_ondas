@@ -16,12 +16,14 @@ class user_config:
         for p in self.params:
             while True:
                 try:
-                    dato=float(input(f"Ingrese el {p}: "))
-                    if dato:
-                        self.params[p]=dato
+                    entrada = input(f"Ingrese el {p} (default: {self.params[p]}): ")
+                    if entrada.strip() == "":
+                        break  # mantiene el default y avanza
+                    dato = float(entrada)
+                    self.params[p] = int(dato) if p == "N" else dato
                     break
-                except:
-                    print('Ingresa un valor valido o deja vacio el valor por favor.')
+                except ValueError:
+                    print('Ingresa un valor valido por favor.')
     def datos_elegidos(self):
         return self.params 
     def validar_datos(self):
@@ -30,7 +32,14 @@ class user_config:
     def datos_operador_temporal(self):
         return [int(self.params["N"]),self.params["grilla"],self.params["dt"]]
     def datos_potencial(self):
-        return [self.params["limite_izq"],self.params["limite_der"],self.params["V0"],self.params["punto_potencial"]]
+            return {
+        "limite_izq": self.params["limite_izq"],
+        "limite_der": self.params["limite_der"],
+        "V_0": self.params["V0"],
+        "punto_potencial": self.params["punto_potencial"]
+    }
+
+
 class constantes_elegidas:
     def __init__(self):
         self.constantes={
@@ -40,12 +49,17 @@ class constantes_elegidas:
         for d in self.constantes:
             while True:
                 try:
-                    valor=float(input(f"Ingrese el dato {d}: "))
-                    if valor:
-                            self.constantes[d]=valor 
-                    break 
-                except:
-                    print("Ingrese un valor valido o deje la opcion vacia por favor.")
+                    entrada = input(f"Ingrese el {d} (default: {self.constantes[d]}): ")
+                    if entrada.strip() == "":
+                        break
+                    valor = float(entrada)
+                    if valor <= 0:
+                        print("El valor debe ser positivo.")
+                        continue
+                    self.constantes[d] = valor
+                    break
+                except ValueError:
+                    print("Ingrese un valor valido por favor.")
     def validacion(self):
         if not all(map(lambda x:x>0,self.constantes.values())):
             raise ValueError("Todos los valores deben de ser estrictamente positivos")
@@ -56,20 +70,22 @@ from potenciales import *
 class c_potenciales:
     def __init__(self):
         self.potencial={
+            "libre":libre,
             "pozo_infinito":pozo_infinito,
             "escalon":escalon,
             "barrera":barrera,
-            "pozo_finito":pozo_finito
+            "pozo_finito":pozo_finito,
+            "pozo_triangular":pozo_triangular,
+            "oscilador_armonico":oscilador_armonico,
+            "doble_pozo":doble_pozo
         }
     def selector(self,nombre):
         if nombre not in self.potencial:
             raise KeyError(f"El potencial {nombre} no se encuentra indexado en la base de datos")
         return self.potencial[nombre]
     def muestrame(self):
-        for n in self.potencial:
-            k=1
+        for k,n in enumerate(self.potencial):
             print(f"{k}.{n}\n")
-            k+=1
         while True:
             try:
                 nombre=input("Copia el nombre tal cual por favor: ")

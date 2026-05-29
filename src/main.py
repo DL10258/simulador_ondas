@@ -13,6 +13,7 @@ psi_0=estado_inicial(x,dx,datos.params["x0"],datos.params["sigma"],datos.params[
 pot=c_potenciales()
 mi_potencial=pot.muestrame()
 V=pot.potencial[mi_potencial](x,**datos.datos_potencial())
+V=agregar_absorbente(V,x)
 diags_AB=operador_evolucion_temporal(*datos.datos_operador_temporal(),const_usuario.constantes,V)
 
 
@@ -28,18 +29,16 @@ ax.set_xlim(-datos.params["grilla"], datos.params["grilla"])
 ax.set_ylim(0, 0.5)
 ax.set_xlabel("x")
 ax.set_ylabel(r"$|\psi|^2$")
-
-# potencial escalado visualmente
-V_abs_max = np.max(np.abs(V))
+V_visual = np.real(V).astype(np.float64)
+V_abs_max = np.max(np.abs(V_visual))
 if V_abs_max > 0:
-    V_visual = V / V_abs_max * 0.3  # escala al 30% del eje
+    V_visual = V_visual / V_abs_max * 0.3
 else:
-    V_visual = V
-# y ajusta ylim para que se vean potenciales negativos
-ax.set_ylim(V_visual.min() - 0.05, 0.5)
+    V_visual = V_visual
+
+ax.set_ylim(float(V_visual.min()) - 0.05, 0.5)
 ax.fill_between(x, V_visual, alpha=0.2, color='orange', label='V(x)')
-ax.axhline(0, color='gray', lw=0.5, linestyle='--')  # línea de referencia en 0
-ax.fill_between(x, V/V_abs_max * 0.4, alpha=0.15, color='orange', label='V(x)')
+ax.axhline(0, color='gray', lw=0.5, linestyle='--')
 line, = ax.plot(x, np.abs(psi)**2, color='royalblue', lw=1.5)
 
 '''def update(frame):
@@ -48,16 +47,16 @@ line, = ax.plot(x, np.abs(psi)**2, color='royalblue', lw=1.5)
         psi = paso_tiempo(psi, A, B)
     line.set_ydata(np.abs(psi)**2)
     return line,'''
+USAR_ABSORBENTE = True  # cambia según el potencial
 def paquete_en_borde(psi, dx, umbral=1e-3):
     borde_izq = np.sum(np.abs(psi[:50])**2) * dx
     borde_der = np.sum(np.abs(psi[-50:])**2) * dx
     return borde_izq > umbral or borde_der > umbral
-
 def update(frame):
     global psi
     for _ in range(PASOS_POR_FRAME):
         psi = paso_tiempo(psi, *diags_AB)
-    if paquete_en_borde(psi, dx):
+    if not USAR_ABSORBENTE and paquete_en_borde(psi, dx):
         psi = estado_inicial(x, dx, datos.params["x0"], datos.params["sigma"], datos.params["k0"])
     line.set_ydata(np.abs(psi)**2)
     return line,

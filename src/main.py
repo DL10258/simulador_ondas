@@ -47,7 +47,7 @@ line, = ax.plot(x, np.abs(psi)**2, color='royalblue', lw=1.5)
         psi = paso_tiempo(psi, A, B)
     line.set_ydata(np.abs(psi)**2)
     return line,'''
-USAR_ABSORBENTE = True  # cambia según el potencial
+USAR_ABSORBENTE = True
 def paquete_en_borde(psi, dx, umbral=1e-3):
     borde_izq = np.sum(np.abs(psi[:50])**2) * dx
     borde_der = np.sum(np.abs(psi[-50:])**2) * dx

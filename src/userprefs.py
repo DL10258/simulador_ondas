@@ -1,3 +1,4 @@
+import scipy.constants as const
 class user_config:
     def __init__(self):
         self.params={
@@ -6,7 +7,7 @@ class user_config:
             "V_0":25.0,
             "punto_potencial":0.0,
             "grilla":25.0,
-            "N":1500,
+            "N":3000,
             "dt":1e-4,
             "sigma":1.0,
             "k0":5.0,
@@ -25,14 +26,22 @@ class user_config:
         for p in self.params:
             while True:
                 try:
-                    entrada = input(f"Ingrese el {p} (default: {self.params[p]}): ")
-                    if entrada.strip() == "":
-                        break  # mantiene el default y avanza
-                    dato = float(entrada)
-                    self.params[p] = int(dato) if p == "N" else dato
-                    break
+                    entrada=input(f"Ingrese el {p} (default: {self.params[p]}): ").strip()
+                    if entrada=="":
+                        valor_evaluar=self.params[p] 
+                    else:
+                        valor_evaluar=float(entrada)
+                    if p=="limite_der":
+                        if valor_evaluar<=self.params["limite_izq"]:
+                            print(f"Error: El limite_der ({valor_evaluar}) debe ser mayor que el limite_izq ({self.params['limite_izq']}).")
+                            continue
+                    if p=="N":
+                        self.params[p]=int(valor_evaluar)
+                    else:
+                        self.params[p]=valor_evaluar
+                    break 
                 except ValueError:
-                    print('Ingresa un valor valido por favor.')
+                    print("Error: Ingrese un valor numérico válido por favor.")
     def datos_elegidos(self):
         return self.params 
     def validar_datos(self):
@@ -55,25 +64,22 @@ class constantes_elegidas:
             "hbar":1.0,
             "masa":1.0}
     def obtener_datosc(self):
-        for d in self.constantes:
-            while True:
-                try:
-                    entrada = input(f"Ingrese el {d} (default: {self.constantes[d]}): ")
-                    if entrada.strip() == "":
-                        break
-                    valor = float(entrada)
-                    if valor <= 0:
-                        print("El valor debe ser positivo.")
-                        continue
-                    self.constantes[d] = valor
+        opciones_positivas=["s","S","si","Si","SI","y","Y","yes","Yes","YES"]
+        opciones_negativas=["n","N","no","No","NO"]
+        while True:
+            try:
+                dato=input("¿Desea usar el sistema atomico? S/n: ")
+                if dato in opciones_positivas:
                     break
-                except ValueError:
-                    print("Ingrese un valor valido por favor.")
-    def validacion(self):
-        if not all(map(lambda x:x>0,self.constantes.values())):
-            raise ValueError("Todos los valores deben de ser estrictamente positivos")
-    def datos_operador_temporal(self):
-        return [self.constantes["hbar"],self.constantes["masa"]]
+                elif dato in opciones_negativas:
+                    print("Se procedera a usar las constantes en el S.I.")
+                    self.constantes["hbar"]=const.hbar
+                    self.constantes["masa"]=float(input("Ingrese la masa: "))
+                    break
+                else:
+                    print("Seleccione una opción valida por favor.")
+            except:
+                print("Seleccione una opcion valida.")
 
 from potenciales import *
 class c_potenciales:

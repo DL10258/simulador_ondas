@@ -9,12 +9,12 @@ const_usuario=constantes_elegidas()
 const_usuario.obtener_datosc()
 dx=2*datos.params["grilla"]/int(datos.params["N"])
 x=np.linspace(-datos.params["grilla"]+dx,datos.params["grilla"]-dx,int(datos.params["N"]))
-psi_0=estado_inicial(x,dx,datos.params["x0"],datos.params["sigma"],datos.params["k0"])
+psi_0=estado_inicial(x,dx,**datos.params)
 pot=c_potenciales()
 mi_potencial=pot.muestrame()
-V=pot.potencial[mi_potencial](x,**datos.datos_potencial())
+V=pot.potencial[mi_potencial](x,**datos.params)
 V=agregar_absorbente(V,x)
-diags_AB=operador_evolucion_temporal(*datos.datos_operador_temporal(),const_usuario.constantes,V)
+diags_AB=operador_evolucion_temporal(V,**datos.params,**const_usuario.constantes)
 
 
 #De aqui para abajo fue robado pero igual no sirve, si encuentras una mejor manera de ejecutar esto, seria lo mejor.

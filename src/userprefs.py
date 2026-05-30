@@ -3,14 +3,23 @@ class user_config:
         self.params={
             "limite_izq":-0.2,
             "limite_der":0.2,
-            "V0":25.0,
+            "V_0":25.0,
             "punto_potencial":0.0,
             "grilla":25.0,
             "N":1500,
             "dt":1e-4,
             "sigma":1.0,
             "k0":5.0,
-            "x0":-5.0
+            "x0":-5.0,
+            "ancho":3.0,
+            "fuerza":15.0,
+            "omega":1.0,
+            "centro_parabola":0.0,
+            "valor_infinito":1e10,
+            "centro":0.0,
+            "epsilon":0.3,
+            "lam":0.1,
+            "a":3.0
         }
     def obtener_datos(self):
         for p in self.params:
@@ -35,7 +44,7 @@ class user_config:
             return {
         "limite_izq": self.params["limite_izq"],
         "limite_der": self.params["limite_der"],
-        "V_0": self.params["V0"],
+        "V_0": self.params["V_0"],
         "punto_potencial": self.params["punto_potencial"]
     }
 

@@ -3,6 +3,7 @@ import scipy.constants as const
 import numpy as np 
 import matplotlib.pyplot as plt 
 from userprefs import *
+import scienceplots
 #import time 
 from solver import *
 st.set_page_config(layout="wide",page_title="Simulador de ondas cuanticas")
@@ -102,8 +103,11 @@ if st.button("INICIAR SIMULACIÓN", use_container_width=True):
     if V_abs_max > 0:
         V_visual = V_visual / V_abs_max * 0.3
 
-    plt.style.use('dark_background')
+    plt.style.use(['science', 'notebook', 'grid'])
     fig, ax = plt.subplots(figsize=(10, 4))
+    ax.minorticks_on()
+    ax.grid(which='major', color='gray', linestyle='-', linewidth=0.5, alpha=0.3)
+    ax.grid(which='minor', color='gray', linestyle=':', linewidth=0.5, alpha=0.1)
     ax.set_xlim(st.session_state.user.params["grillaI"],
                 st.session_state.user.params["grillaD"])
     ax.set_ylim(min(-0.05, V_visual.min() - 0.05), 1.0)

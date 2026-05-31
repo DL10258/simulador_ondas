@@ -120,7 +120,7 @@ if st.button("INICIAR SIMULACIÓN", use_container_width=True):
     ax.grid(which='minor', color='gray', linestyle=':', linewidth=0.5, alpha=0.1)
     ax.set_xlim(st.session_state.user.params["grillaI"],
                 st.session_state.user.params["grillaD"])
-    ax.set_ylim(min(-0.05, V_visual.min() - 0.05), 1.0)
+    ax.set_ylim(min(-0.05, V_visual.min() - 0.05), 1.5)
     ax.set_xlabel(r"Posición $x$")
     ax.set_ylabel(r"Densidad $|\psi|^2$")
     ax.fill_between(x, V_visual, alpha=0.2, color='orange', label=r'$V(x)$')

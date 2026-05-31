@@ -6,7 +6,8 @@ class user_config:
             "limite_der":0.2,
             "V_0":25.0,
             "punto_potencial":0.0,
-            "grilla":25.0,
+            "grillaI":-15.0,
+            "grillaD":15.0,
             "N":3000,
             "dt":1e-4,
             "sigma":1.0,
@@ -48,7 +49,7 @@ class user_config:
         if self.params["limite_izq"]>=self.params["limite_der"]:
             raise ValueError("El limite derecho debe de ser mayor estrictamente al izquierdo")
     def datos_operador_temporal(self):
-        return [int(self.params["N"]),self.params["grilla"],self.params["dt"]]
+        return [int(self.params["N"]),self.params["dt"]]
     def datos_potencial(self):
             return {
         "limite_izq": self.params["limite_izq"],
@@ -94,6 +95,7 @@ class c_potenciales:
             "oscilador_armonico":oscilador_armonico,
             "doble_pozo":doble_pozo
         }
+        self.absorbente=agregar_absorbente
     def selector(self,nombre):
         if nombre not in self.potencial:
             raise KeyError(f"El potencial {nombre} no se encuentra indexado en la base de datos")

@@ -5,6 +5,16 @@ import matplotlib.pyplot as plt
 from userprefs import *
 import scienceplots
 #import time 
+plt.rcParams.update({
+    "text.usetex": True,
+    "font.family": "serif",
+    "font.serif": ["Computer Modern Roman"],
+    "font.size": 12,
+    "axes.labelsize": 14,
+    "legend.fontsize": 12,
+    "xtick.labelsize": 10,
+    "ytick.labelsize": 10
+})
 from solver import *
 st.set_page_config(layout="wide",page_title="Simulador de ondas cuanticas")
 def paquete_en_borde(psi_eval, dx_val, umbral=1e-3):
@@ -113,7 +123,7 @@ if st.button("INICIAR SIMULACIÓN", use_container_width=True):
     ax.set_ylim(min(-0.05, V_visual.min() - 0.05), 1.0)
     ax.set_xlabel(r"Posición $x$")
     ax.set_ylabel(r"Densidad $|\psi|^2$")
-    ax.fill_between(x, V_visual, alpha=0.2, color='orange', label='V(x)')
+    ax.fill_between(x, V_visual, alpha=0.2, color='orange', label=r'$V(x)$')
     ax.axhline(0, color='gray', lw=0.5, linestyle='--')
     line, = ax.plot(x, np.abs(psi)**2, color='royalblue', lw=1.5, label=r"$|\psi|^2$")
     ax.legend(loc="upper right")

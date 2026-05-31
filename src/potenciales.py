@@ -1,11 +1,11 @@
 import numpy as np 
-def agregar_absorbente(V, x, ancho=3.0, fuerza=15.0):
+def agregar_absorbente(V, x, **kwargs):
     V_abs = V.astype(complex)
     x_min, x_max = x[0], x[-1]
-    mask_izq = x < (x_min + ancho)
-    mask_der = x > (x_max - ancho)
-    V_abs[mask_izq] -= 1j * fuerza * ((x_min + ancho - x[mask_izq]) / ancho)**2
-    V_abs[mask_der] -= 1j * fuerza * ((x[mask_der] - (x_max - ancho)) / ancho)**2
+    mask_izq = x < (x_min + kwargs["ancho"])
+    mask_der = x > (x_max - kwargs["ancho"])
+    V_abs[mask_izq] -= 1j * kwargs["fuerza"] * ((x_min + kwargs["ancho"] - x[mask_izq]) / kwargs["ancho"])**2
+    V_abs[mask_der] -= 1j * kwargs["fuerza"] * ((x[mask_der] - (x_max - kwargs["ancho"])) / kwargs["ancho"])**2
     return V_abs
 def libre(x,**kwargs):
     V=np.zeros_like(x)

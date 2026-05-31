@@ -7,8 +7,8 @@ datos=user_config()
 datos.obtener_datos()
 const_usuario=constantes_elegidas()
 const_usuario.obtener_datosc()
-dx=2*datos.params["grilla"]/int(datos.params["N"])
-x=np.linspace(-datos.params["grilla"]+dx,datos.params["grilla"]-dx,int(datos.params["N"]))
+dx=(datos.params["grillaD"]-datos.params["grillaI"])/int(datos.params["N"])
+x=np.linspace(datos.params["grillaI"]+dx,datos.params["grillaD"]-dx,int(datos.params["N"]))
 psi_0=estado_inicial(x,dx,**datos.params)
 pot=c_potenciales()
 mi_potencial=pot.muestrame()
@@ -25,7 +25,7 @@ psi = psi_0.copy()
 PASOS_POR_FRAME = 200
 
 fig, ax = plt.subplots(figsize=(10, 4))
-ax.set_xlim(-datos.params["grilla"], datos.params["grilla"])
+ax.set_xlim(datos.params["grillaI"], datos.params["grillaD"])
 ax.set_ylim(0, 0.5)
 ax.set_xlabel("x")
 ax.set_ylabel(r"$|\psi|^2$")
@@ -57,7 +57,7 @@ def update(frame):
     for _ in range(PASOS_POR_FRAME):
         psi = paso_tiempo(psi, *diags_AB)
     if not USAR_ABSORBENTE and paquete_en_borde(psi, dx):
-        psi = estado_inicial(x, dx, datos.params["x0"], datos.params["sigma"], datos.params["k0"])
+        psi = estado_inicial(x, dx, **datos.params)
     line.set_ydata(np.abs(psi)**2)
     return line,
 ani = animation.FuncAnimation(fig, update, frames=300, interval=20, blit=True)

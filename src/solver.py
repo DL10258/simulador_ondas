@@ -1,5 +1,10 @@
 import numpy as np 
 import numba as nb 
+def corriente(psi,dx,idx,**kwargs):
+    dpsi_dx=(psi[idx+1]-psi[idx-1])/(2*dx)
+    dpsi_dx_c=(np.conj(psi[idx+1])-np.conj(psi[idx-1]))/(2*dx)
+    J=1j*kwargs["hbar"]/(2*kwargs["masa"]) * (psi[idx]*dpsi_dx_c - np.conj(psi[idx])*dpsi_dx)
+    return np.real(J)
 def normalizar(psi,dx):
     norma = np.sqrt(np.sum(np.abs(psi)**2) * dx)
     return psi / norma

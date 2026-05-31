@@ -13,7 +13,7 @@ psi_0=estado_inicial(x,dx,**datos.params)
 pot=c_potenciales()
 mi_potencial=pot.muestrame()
 V=pot.potencial[mi_potencial](x,**datos.params)
-V=agregar_absorbente(V,x)
+V=agregar_absorbente(V,x,**datos.params)
 diags_AB=operador_evolucion_temporal(V,**datos.params,**const_usuario.constantes)
 
 

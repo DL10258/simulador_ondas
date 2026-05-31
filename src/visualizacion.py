@@ -119,13 +119,6 @@ if st.button("INICIAR SIMULACIÓN", use_container_width=True):
     margen_pml = st.session_state.user.params["ancho"] + 2.0
     idx_R = np.argmin(np.abs(x - (st.session_state.user.params["grillaI"] + margen_pml)))
     idx_T = np.argmin(np.abs(x - (st.session_state.user.params["grillaD"] - margen_pml)))
-
-    st.write(f"idx_R en x = {x[idx_R]:.2f}")
-    st.write(f"idx_T en x = {x[idx_T]:.2f}")
-    st.write(f"x0 = {st.session_state.user.params['x0']:.2f}")
-    st.write(f"PML izquierdo empieza en x = {x[0] + st.session_state.user.params['ancho']:.2f}")
-    st.write(f"PML derecho empieza en x = {x[-1] - st.session_state.user.params['ancho']:.2f}")
-
     T_acum = 0.0
     R_acum = 0.0
     incidente_paso=False 

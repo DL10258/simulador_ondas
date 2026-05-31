@@ -8,7 +8,7 @@ def estado_inicial(x, dx, **kwargs):
     psi = A * np.exp(-((x - kwargs["x0"])**2) / (4*kwargs["sigma"]**2)) * np.exp(1j*kwargs["k0"]*x)
     return normalizar(psi,dx)
 def operador_evolucion_temporal(V,**kwargs):
-    dx=2*kwargs["grilla"]/kwargs["N"] 
+    dx=(kwargs["grillaD"]-kwargs["grillaI"])/kwargs["N"] 
     alpha=kwargs["hbar"]**2/(2*kwargs["masa"]*dx**2)
     beta=1j*0.5*kwargs["dt"]/kwargs["hbar"]
     diag_principal=2*alpha+V 
@@ -28,7 +28,8 @@ def thomas(a, b, c, d):
     d_[0] = d[0] / b[0]
     for i in range(1, n):
         m     = b[i] - a[i-1] * c_[i-1]
-        c_[i] = c[i] / m
+        if i<n-1:
+            c_[i] = c[i] / m
         d_[i] = (d[i] - a[i-1] * d_[i-1]) / m
     x[-1] = d_[-1]
     for i in range(n-2, -1, -1):

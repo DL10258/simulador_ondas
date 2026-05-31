@@ -3,7 +3,7 @@ import scipy.constants as const
 import numpy as np 
 import matplotlib.pyplot as plt 
 from userprefs import *
-import time 
+#import time 
 from solver import *
 st.set_page_config(layout="wide",page_title="Simulador de ondas cuanticas")
 def paquete_en_borde(psi_eval, dx_val, umbral=1e-3):
@@ -17,7 +17,7 @@ if 'simulador_iniciado' not in st.session_state:
     st.session_state.simulador_iniciado=True
 st.title("Simulador de ondas en 1D")
 st.sidebar.header("Panel de Control")
-definir_entorno,definir_potencial,definir_particula=st.sidebar.tabs(["Entorno","Potencial","Partícula"])
+definir_entorno,definir_potencial,definir_particula,amortiguamiento=st.sidebar.tabs(["Entorno","Potencial","Partícula","Amortiguamiento"])
 with definir_entorno:
     st.subheader("Unidades y Masa")
     sistema=st.radio("Unidades: ",["Atómicas","S.I."])
@@ -32,12 +32,15 @@ with definir_entorno:
     st.session_state.user.params["grillaI"]=st.number_input("Limites Izquierdo",value=0.0)
     st.session_state.user.params["grillaD"]=st.number_input("Limite Derecho",value=np.abs(st.session_state.user.params["grillaI"])+1.0,min_value=st.session_state.user.params["grillaI"]+1.0)
     st.session_state.user.params["N"]=st.number_input("Número de puntos",value=1500,min_value=1500,max_value=15000,step=500)
-    st.session_state.user.params["dt"]=st.number_input(r"Paso temporal $(s)$",value=0.001,format="%f")
+    st.session_state.user.params["dt"]=st.number_input(r"Paso temporal $(s)$",value=0.0001,format="%f")
 with definir_potencial:
     st.subheader("Configura tu potencial")
-    tipo_potencial=st.selectbox("Elegir",["Barrera","Pozo","Oscilador","Libre"])
+    tipo_potencial=st.selectbox("Elegir",["Libre","Barrera","Pozo","Oscilador","Escalon"])
     if tipo_potencial=="Libre":
         pass
+    elif tipo_potencial=="Escalon":
+        st.session_state.user.params["V_0"]=st.number_input("Seleciona el valor del potencial",value=25.0,min_value=0.0,step=1.0,format="%f")
+        st.session_state.user.params["punto_potencial"]=st.number_input("Selecciona en donde comienza tu escalon",value=0.0)
     elif tipo_potencial=="Barrera":
         st.session_state.user.params["V_0"]=st.number_input("Seleccione el valor del potencial", value=st.session_state.user.params["V_0"],min_value=0.0,step=1.0)
         st.session_state.user.params["limite_izq"]=st.number_input("En donde inicia tu potencial",value=0.0,step=1.0)
@@ -59,7 +62,7 @@ with definir_potencial:
             st.session_state.user.params["limite_izq"]=st.number_input("En donde inicia tu pozo",value=0.0,step=1.0)
             st.session_state.user.params["limite_der"]=st.number_input("En donde finaliza tu pozo",value=st.session_state.user.params["limite_izq"]+1.0,min_value=st.session_state.user.params["limite_izq"]+0.1,step=0.1)
         elif tipo_potencial=="Doble Pozo":
-            st.session_state.user.params["lam"]=st.number_input(r"Introduzca la rigidez del potencial $(\lambda)$, valores comunes $(0,01 \to 0,05)$",value=0.01,step=0.01)
+            st.session_state.user.params["lam"]=st.number_input(r"Introduzca la rigidez del potencial $(\lambda)$, valores comunes $(0,01 \to 0,05)$",value=0.001,step=0.001,format="%e")
             st.session_state.user.params["epsilon"]=st.number_input(r"Introduzca la asimetria de los pozos $\epsilon$",value=0.0,step=0.5)
             st.session_state.user.params["a"]=st.number_input(r"Separación entre pozos $(a)$",value=2.0,step=0.5)
     elif tipo_potencial=="Oscilador":
@@ -73,6 +76,11 @@ with definir_particula:
     st.session_state.user.params["k0"]=st.number_input(r"Momento inicial $(k_0)$",value=0.0,step=1.0)
     st.session_state.user.params["sigma"]=st.number_input(r"Dispersión $(\sigma)$",value=1.0,min_value=0.1,step=1.0)
 st.header("Visualización del Entorno")
+with amortiguamiento:
+    st.subheader("Configuración opcional para el amortiguamiento en bordes")
+    st.session_state.user.params["ancho"]=st.number_input("Introduzca el ancho de amortiguamiento",value=3.0,min_value=1.0)
+    st.session_state.user.params["fuerza"]=st.number_input("Introduzca la magnitud de la fuerza",value=15.0,min_value=1.0)
+
 if st.button("INICIAR SIMULACIÓN", use_container_width=True):
     marco_grafica = st.empty()
     barra = st.progress(0)
@@ -83,7 +91,7 @@ if st.button("INICIAR SIMULACIÓN", use_container_width=True):
                     int(st.session_state.user.params["N"]))
     potencial_elegido=tipo_potencial.lower().replace(" ","_")
     V = st.session_state.potenciales.selector(potencial_elegido)(x, **st.session_state.user.params)
-    V = st.session_state.potenciales.absorbente(V, x)
+    V = st.session_state.potenciales.absorbente(V, x,**st.session_state.user.params)
     diags_AB = operador_evolucion_temporal(V, **st.session_state.user.params,
                                             **st.session_state.constantes.constantes)
     psi = estado_inicial(x, dx, **st.session_state.user.params)
@@ -106,15 +114,35 @@ if st.button("INICIAR SIMULACIÓN", use_container_width=True):
     line, = ax.plot(x, np.abs(psi)**2, color='royalblue', lw=1.5, label=r"$|\psi|^2$")
     ax.legend(loc="upper right")
 
-    PASOS_POR_FRAME = 1000
-    FRAMES_TOTALES = 400
+    PASOS_POR_FRAME = 500
+    FRAMES_TOTALES = 2000 
+    margen_pml = st.session_state.user.params["ancho"] + 2.0
+    idx_R = np.argmin(np.abs(x - (st.session_state.user.params["grillaI"] + margen_pml)))
+    idx_T = np.argmin(np.abs(x - (st.session_state.user.params["grillaD"] - margen_pml)))
 
+    st.write(f"idx_R en x = {x[idx_R]:.2f}")
+    st.write(f"idx_T en x = {x[idx_T]:.2f}")
+    st.write(f"x0 = {st.session_state.user.params['x0']:.2f}")
+    st.write(f"PML izquierdo empieza en x = {x[0] + st.session_state.user.params['ancho']:.2f}")
+    st.write(f"PML derecho empieza en x = {x[-1] - st.session_state.user.params['ancho']:.2f}")
+
+    T_acum = 0.0
+    R_acum = 0.0
+    incidente_paso=False 
     for frame in range(FRAMES_TOTALES):
+        J_T = corriente(psi,dx,idx_T,**st.session_state.user.params,**st.session_state.constantes.constantes)
+        J_R = corriente(psi,dx,idx_R,**st.session_state.user.params,**st.session_state.constantes.constantes)
+        norma = np.sum(np.abs(psi)**2) * dx
         for _ in range(PASOS_POR_FRAME):
             psi = paso_tiempo(psi, a_sub, a_main, a_sup, b_sub, b_main, b_sup)
+        if J_R<0:
+            incidente_paso=True
+        T_acum += max(J_T,0)* st.session_state.user.params["dt"] * PASOS_POR_FRAME
+        if incidente_paso:
+            R_acum += max(-J_R,0) * st.session_state.user.params["dt"] * PASOS_POR_FRAME
         line.set_ydata(np.abs(psi)**2)
+        ax.set_title(f"T ={T_acum:.3f}      R={R_acum:.3f}      T+R={T_acum+R_acum:.3f}       Norma={norma:.3f}")
         marco_grafica.pyplot(fig)
         barra.progress((frame + 1) / FRAMES_TOTALES)
-
     plt.close(fig)  # libera memoria
     st.success("¡Simulación finalizada!")  

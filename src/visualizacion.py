@@ -83,7 +83,7 @@ with definir_potencial:
             st.session_state.user.params["centro"]=st.number_input("Elija el centro",value=0.0,step=1.0)
 with definir_particula:
     st.subheader("Configura tu partícula")
-    st.session_state.user.params["x0"]=st.number_input(r"Posición inicial $(x_0)$",min_value=st.session_state.user.params["grillaI"],max_value=st.session_state.user.params["grillaD"],value=(st.session_state.user.params["grillaI"]+st.session_state.user.params["grillaI"])/2.0+st.session_state.user.params["grillaI"],step=1.0)
+    st.session_state.user.params["x0"]=st.number_input(r"Posición inicial $(x_0)$",min_value=st.session_state.user.params["grillaI"],max_value=st.session_state.user.params["grillaD"],value=(st.session_state.user.params["grillaI"]+st.session_state.user.params["grillaI"])/2.0,step=1.0)
     st.session_state.user.params["k0"]=st.number_input(r"Momento inicial $(k_0)$",value=0.0,step=1.0)
     st.session_state.user.params["sigma"]=st.number_input(r"Dispersión $(\sigma)$",value=1.0,min_value=0.1,step=1.0)
 st.header("Visualización del Entorno")

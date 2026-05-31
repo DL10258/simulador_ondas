@@ -39,7 +39,7 @@ with definir_potencial:
     if tipo_potencial=="Libre":
         pass
     elif tipo_potencial=="Escalon":
-        st.session_state.user.params["V_0"]=st.number_input("Seleciona el valor del potencial",value=25.0,min_value=0.0,step=1.0,format="%f")
+        st.session_state.user.params["V_0"]=st.number_input("Seleciona el valor del potencial",value=25.0,min_value=0.0,step=1.0)
         st.session_state.user.params["punto_potencial"]=st.number_input("Selecciona en donde comienza tu escalon",value=0.0)
     elif tipo_potencial=="Barrera":
         st.session_state.user.params["V_0"]=st.number_input("Seleccione el valor del potencial", value=st.session_state.user.params["V_0"],min_value=0.0,step=1.0)

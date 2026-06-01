@@ -51,7 +51,7 @@ with definir_entorno:
     st.session_state.user.params["dt"]=st.number_input(r"Paso temporal $(s)$",value=0.0001,format="%f")
 with definir_potencial:
     st.subheader("Configura tu potencial")
-    tipo_potencial=st.selectbox("Elegir",["Libre","Barrera","Pozo","Oscilador","Escalon"])
+    tipo_potencial=st.selectbox("Elegir",["Libre","Barrera","Pozo","Oscilador","Escalon","Delta de Dirac"])
     if tipo_potencial=="Libre":
         pass
     elif tipo_potencial=="Escalon":
@@ -61,8 +61,11 @@ with definir_potencial:
         st.session_state.user.params["V_0"]=st.number_input("Seleccione el valor del potencial", value=st.session_state.user.params["V_0"],min_value=0.0,step=1.0)
         st.session_state.user.params["limite_izq"]=st.number_input("En donde inicia tu potencial",value=0.0,step=1.0)
         st.session_state.user.params["limite_der"]=st.number_input("En donde finaliza tu potencial",value=st.session_state.user.params["limite_izq"]+1.0,min_value=st.session_state.user.params["limite_izq"]+0.1,step=0.1)
-
-
+    elif tipo_potencial == "Delta de Dirac":
+        tipo_potencial="delta_dirac"
+        st.session_state.user.params["centro"] = st.number_input("Centro de la delta", value=0.0, step=1.0)
+        st.session_state.user.params["alpha"] = st.number_input(r"Fuerza $\alpha$ (positivo=barrera, negativo=pozo)",
+        value=5.0, step=1.0)
     elif tipo_potencial=="Pozo":
         tipo_potencial=st.selectbox("Seleccione su pozo",["Pozo Finito","Pozo Infinito","Pozo Triangular","Doble Pozo"])
         if tipo_potencial=="Pozo Finito":

@@ -50,3 +50,21 @@ def paso_tiempo(psi,a_sub,a_main,a_sup,b_sub,b_main,b_sup):
         rhs[i]=b_sub[i-1]*psi[i-1]+b_main[i]*psi[i]+b_sup[i]*psi[i+1]
     rhs[-1]=b_sub[-1]*psi[-2]+b_main[-1]*psi[-1]
     return thomas(a_sub,a_main,a_sup,rhs)
+def incertidumbre(psi, x, dx, **kwargs):
+    hbar = kwargs["hbar"]
+    #masa = kwargs["masa"]
+    densidad = np.abs(psi)**2
+    x_med   = np.sum(x * densidad) * dx
+    x2_med  = np.sum(x**2 * densidad) * dx
+    delta_x = np.sqrt(np.abs(x2_med - x_med**2))
+    dpsi    = np.gradient(psi, dx)
+    d2psi   = np.gradient(dpsi, dx)
+    p_med   = np.real(-1j * hbar * np.sum(np.conj(psi) * dpsi) * dx)
+    p2_med  = np.real(-hbar**2 * np.sum(np.conj(psi) * d2psi) * dx)
+    delta_p = np.sqrt(np.abs(p2_med - p_med**2))
+    return delta_x, delta_p, delta_x * delta_p
+def energia_total(psi,V,dx,**_):
+    d2psi=np.gradient(np.gradient(psi,dx),dx)
+    K=np.real(-0.5*(_["hbar"]/_["masa"])*np.sum(np.conj(psi)*d2psi)*dx)
+    U=np.real(np.sum(np.abs(psi)**2*np.real(V))*dx)
+    return K+U 

@@ -162,7 +162,7 @@ if st.button("INICIAR SIMULACIÓN", use_container_width=True):
         E=energia_total(psi, V, dx,**st.session_state.constantes.constantes)
         dx_val, dp_val, heis = incertidumbre(psi,x,dx,**st.session_state.constantes.constantes)
         met_E.metric("Energía total", f"{E:.4f}")
-        met_deltax.metric(r"$\Delta x\cdot\Delta p", f"{heis:.4f}",delta=f"{heis - st.session_state.constantes.constantes["hbar"]*0.5:.4f}")
+        met_deltax.metric(r"$\Delta x\cdot\Delta p$", f"{heis:.4f}",delta=f"{heis - st.session_state.constantes.constantes["hbar"]*0.5:.4f}")
         met_heisenberg.metric(r"$\Delta x$", f"{dx_val:.4f}")
         for _ in range(PASOS_POR_FRAME):
             psi = paso_tiempo(psi, a_sub, a_main, a_sup, b_sub, b_main, b_sup)

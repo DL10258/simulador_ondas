@@ -37,3 +37,9 @@ def oscilador_armonico(x,**kwargs):
     return 0.5 * kwargs["omega"]**2 * (x-kwargs["centro"])**2
 def doble_pozo(x,**kwargs):
     return kwargs["lam"] * (x**2 - kwargs["a"]**2)**2 + kwargs["epsilon"] * x 
+def delta_dirac(x, **kwargs):
+    dx=x[1]-x[0]
+    V=np.zeros_like(x,dtype=np.float64)
+    idx=np.argmin(np.abs(x-kwargs["centro"]))
+    V[idx]=kwargs["alpha"]/dx
+    return V

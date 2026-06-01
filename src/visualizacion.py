@@ -66,6 +66,7 @@ with definir_potencial:
         st.session_state.user.params["centro"] = st.number_input("Centro de la delta", value=0.0, step=1.0)
         st.session_state.user.params["alpha"] = st.number_input(r"Fuerza $\alpha$ (positivo=barrera, negativo=pozo)",
         value=5.0, step=1.0)
+        #st.write(f"potencial elegido: {tipo_potencial}")
     elif tipo_potencial=="Pozo":
         tipo_potencial=st.selectbox("Seleccione su pozo",["Pozo Finito","Pozo Infinito","Pozo Triangular","Doble Pozo"])
         if tipo_potencial=="Pozo Finito":

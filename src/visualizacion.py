@@ -146,6 +146,11 @@ if st.button("INICIAR SIMULACIÓN", use_container_width=True):
     met_R=col2.empty()
     met_TR=col3.empty()
     met_N=col4.empty()
+    st.subheader("Observables")
+    col_e,col_dx,col_heis=st.columns(3)
+    met_E=col_e.empty()
+    met_deltax=col_dx.empty()
+    met_heisenberg=col_heis.empty()
     for frame in range(FRAMES_TOTALES):
         J_T = corriente(psi,dx,idx_T,**st.session_state.user.params,**st.session_state.constantes.constantes)
         J_R = corriente(psi,dx,idx_R,**st.session_state.user.params,**st.session_state.constantes.constantes)
@@ -154,6 +159,11 @@ if st.button("INICIAR SIMULACIÓN", use_container_width=True):
         met_R.metric("Reflexión R",   f"{R_acum:.3f}")
         met_TR.metric("T + R", f"{T_acum+R_acum:.3f}",delta=f"{T_acum+R_acum-1:.4f}")
         met_N.metric(r"$||\psi(x,t)||$",f"{norma:.3f}")
+        E      = energia_total(psi, V, dx)
+        dx_val, dp_val, heis = incertidumbre(psi, x, dx)
+        met_E.metric("Energía total", f"{E:.4f}")
+        met_deltax.metric("Δx · Δp", f"{heis:.4f}",delta=f"{heis - st.session_state.constantes.constantes["hbar"]*0.5:.4f}")
+        met_heisenberg.metric("Δx", f"{dx_val:.4f}")
         for _ in range(PASOS_POR_FRAME):
             psi = paso_tiempo(psi, a_sub, a_main, a_sup, b_sub, b_main, b_sup)
         if J_R<0:

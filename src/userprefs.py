@@ -21,7 +21,8 @@ class user_config:
             "centro":0.0,
             "epsilon":0.3,
             "lam":0.1,
-            "a":3.0
+            "a":3.0,
+            "alpha":5.0
         }
     def obtener_datos(self):
         for p in self.params:
@@ -93,7 +94,8 @@ class c_potenciales:
             "pozo_finito":pozo_finito,
             "pozo_triangular":pozo_triangular,
             "oscilador_armonico":oscilador_armonico,
-            "doble_pozo":doble_pozo
+            "doble_pozo":doble_pozo,
+            "delta_dirac":delta_dirac
         }
         self.absorbente=agregar_absorbente
     def selector(self,nombre):

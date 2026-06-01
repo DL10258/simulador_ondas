@@ -27,6 +27,11 @@ if 'simulador_iniciado' not in st.session_state:
     st.session_state.potenciales=c_potenciales()
     st.session_state.simulador_iniciado=True
 st.title("Simulador de ondas en 1D")
+st.markdown("""
+Simulación numérica de la ecuación de Schrödinger dependiente del tiempo 
+usando el método de **Crank-Nicolson** con transformación de Cayley.
+""")
+st.divider()
 st.sidebar.header("Panel de Control")
 definir_entorno,definir_potencial,definir_particula,amortiguamiento=st.sidebar.tabs(["Entorno","Potencial","Partícula","Amortiguamiento"])
 with definir_entorno:
@@ -83,7 +88,7 @@ with definir_potencial:
             st.session_state.user.params["centro"]=st.number_input("Elija el centro",value=0.0,step=1.0)
 with definir_particula:
     st.subheader("Configura tu partícula")
-    st.session_state.user.params["x0"]=st.number_input(r"Posición inicial $(x_0)$",min_value=st.session_state.user.params["grillaI"],max_value=st.session_state.user.params["grillaD"],value=(st.session_state.user.params["grillaI"]+st.session_state.user.params["grillaI"])/2.0,step=1.0)
+    st.session_state.user.params["x0"]=st.number_input(r"Posición inicial $(x_0)$",min_value=st.session_state.user.params["grillaI"],max_value=st.session_state.user.params["grillaD"],value=(st.session_state.user.params["grillaD"]+st.session_state.user.params["grillaI"])/2.0,step=1.0)
     st.session_state.user.params["k0"]=st.number_input(r"Momento inicial $(k_0)$",value=0.0,step=1.0)
     st.session_state.user.params["sigma"]=st.number_input(r"Dispersión $(\sigma)$",value=1.0,min_value=0.1,step=1.0)
 st.header("Visualización del Entorno")
@@ -135,11 +140,20 @@ if st.button("INICIAR SIMULACIÓN", use_container_width=True):
     idx_T = np.argmin(np.abs(x - (st.session_state.user.params["grillaD"] - margen_pml)))
     T_acum = 0.0
     R_acum = 0.0
-    incidente_paso=False 
+    incidente_paso=False
+    col1, col2, col3, col4=st.columns(4)
+    met_T=col1.empty()
+    met_R=col2.empty()
+    met_TR=col3.empty()
+    met_N=col4.empty()
     for frame in range(FRAMES_TOTALES):
         J_T = corriente(psi,dx,idx_T,**st.session_state.user.params,**st.session_state.constantes.constantes)
         J_R = corriente(psi,dx,idx_R,**st.session_state.user.params,**st.session_state.constantes.constantes)
         norma = np.sum(np.abs(psi)**2) * dx
+        met_T.metric("Transmisión T", f"{T_acum:.3f}")
+        met_R.metric("Reflexión R",   f"{R_acum:.3f}")
+        met_TR.metric("T + R", f"{T_acum+R_acum:.3f}",delta=f"{T_acum+R_acum-1:.4f}")
+        met_N.metric(r"$||\psi(x,t)||$",f"{norma:.3f}")
         for _ in range(PASOS_POR_FRAME):
             psi = paso_tiempo(psi, a_sub, a_main, a_sup, b_sub, b_main, b_sup)
         if J_R<0:
@@ -148,8 +162,8 @@ if st.button("INICIAR SIMULACIÓN", use_container_width=True):
         if incidente_paso:
             R_acum += max(-J_R,0) * st.session_state.user.params["dt"] * PASOS_POR_FRAME
         line.set_ydata(np.abs(psi)**2)
-        ax.set_title(f"T ={T_acum:.3f}      R={R_acum:.3f}      T+R={T_acum+R_acum:.3f}       Norma={norma:.3f}")
+        #ax.set_title(f"T ={T_acum:.3f}      R={R_acum:.3f}      T+R={T_acum+R_acum:.3f}       Norma={norma:.3f}")
         marco_grafica.pyplot(fig)
         barra.progress((frame + 1) / FRAMES_TOTALES)
-    plt.close(fig)  # libera memoria
+    plt.close(fig)
     st.success("¡Simulación finalizada!")  

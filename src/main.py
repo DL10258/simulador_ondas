@@ -36,7 +36,7 @@ if V_abs_max > 0:
 else:
     V_visual = V_visual
 
-ax.set_ylim(float(V_visual.min()) - 0.05, 0.5)
+ax.set_ylim(float(V_visual.min()) - 0.05, 1.5)
 ax.fill_between(x, V_visual, alpha=0.2, color='orange', label='V(x)')
 ax.axhline(0, color='gray', lw=0.5, linestyle='--')
 line, = ax.plot(x, np.abs(psi)**2, color='royalblue', lw=1.5)

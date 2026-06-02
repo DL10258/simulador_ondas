@@ -45,7 +45,7 @@ with definir_entorno:
         st.session_state.constantes.constantes["hbar"]=const.hbar
     st.write("---")
     st.subheader("Grilla Espacial")
-    st.session_state.user.params["grillaI"]=st.number_input("Limites Izquierdo",value=0.0)
+    st.session_state.user.params["grillaI"]=st.number_input("Limites Izquierdo",value=-25.0)
     st.session_state.user.params["grillaD"]=st.number_input("Limite Derecho",value=np.abs(st.session_state.user.params["grillaI"])+1.0,min_value=st.session_state.user.params["grillaI"]+1.0)
     st.session_state.user.params["N"]=st.number_input("Número de puntos",value=1500,min_value=1500,max_value=15000,step=500)
     st.session_state.user.params["dt"]=st.number_input(r"Paso temporal $(s)$",value=0.0001,format="%f")

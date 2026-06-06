@@ -1,7 +1,7 @@
 import numpy as np 
 import matplotlib.pyplot as plt 
 
-L=30.0
+L=60.0
 N=2000 
 x=np.linspace(-L,0,N)
 

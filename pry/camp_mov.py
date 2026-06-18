@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 L=100.0
 N=2000 
-x=np.linspace(-L/2,L,N)
+x=np.linspace(-50,350,N)
 
 x0=-30.0 
 a=5.0
@@ -26,7 +26,7 @@ fig, ax = plt.subplots(figsize=(10, 5))
 
 linea_prob, = ax.plot(x, np.abs(psi(x, 0))**2, color='blue', lw=2, label=r'$|\psi(x,t)|^2$')
 
-ax.set_xlim(-L/2, L)
+ax.set_xlim(-L/2, 350)
 ax.set_ylim(0, 0.20)
 ax.set_title("Evolución Analítica del Paquete de Ondas Libre")
 ax.set_xlabel("Posición (x)")
@@ -42,5 +42,5 @@ def actualizar(frame):
     linea_prob.set_ydata(np.abs(y_nueva)**2)
     return linea_prob,
 
-animacion = FuncAnimation(fig, actualizar, frames=400, interval=30, blit=True)
+animacion = FuncAnimation(fig, actualizar, frames=1000, interval=30, blit=True)
 plt.show()

@@ -1,5 +1,6 @@
 import numpy as np 
-import numba as nb 
+import numba as nb
+
 def normalizar(psi,dx):
     norma = np.sqrt(np.sum(np.abs(psi)**2) * dx)
     return psi / norma
@@ -44,3 +45,7 @@ def paso_tiempo(psi,a_sub,a_main,a_sup,b_sub,b_main,b_sup):
         rhs[i]=b_sub[i-1]*psi[i-1]+b_main[i]*psi[i]+b_sup[i]*psi[i+1]
     rhs[-1]=b_sub[-1]*psi[-2]+b_main[-1]*psi[-1]
     return thomas(a_sub,a_main,a_sup,rhs)
+def paquete_en_borde(psi, dx, umbral=1e-3):
+    borde_izq = np.sum(np.abs(psi[:50])**2) * dx
+    borde_der = np.sum(np.abs(psi[-50:])**2) * dx
+    return borde_izq > umbral or borde_der > umbral

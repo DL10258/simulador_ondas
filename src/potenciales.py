@@ -24,7 +24,7 @@ def barrera(x,**kwargs):
     return V
 def pozo_finito(x,**kwargs):
     V=np.zeros_like(x)
-    V[(x>=kwargs["limite_izq"])&(x<=["limite_der"])]=-np.abs(kwargs["V_0"])
+    V[(x>=kwargs["limite_izq"])&(x<=kwargs["limite_der"])]=-np.abs(kwargs["V_0"])
     return V 
 def pozo_triangular(x,**kwargs):
     V = np.zeros_like(x, dtype=np.float64)

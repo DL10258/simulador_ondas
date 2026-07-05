@@ -1,5 +1,9 @@
 import numpy as np 
 import numba as nb 
+def calcular_corriente(psi_array, idx, dx_val):
+    factor_masa = 1.0 
+    dpsi_dx = (psi_array[idx + 1] - psi_array[idx - 1]) / (2 * dx_val)
+    return factor_masa * np.imag(np.conj(psi_array[idx]) * dpsi_dx)
 def normalizar(psi,dx):
     norma = np.sqrt(np.sum(np.abs(psi)**2) * dx)
     return psi / norma
